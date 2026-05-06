@@ -66,6 +66,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-export default function handler(req, res) {
-  return app(req, res);
-}
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
