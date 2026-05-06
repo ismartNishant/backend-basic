@@ -1,60 +1,70 @@
-require('dotenv').config()
-const express = require('express')
-const app = express()
-const port = process.env.PORT || 3000
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
 
-app.use(express.json())
+dotenv.config();
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.get('/about', (req, res) => {
-  res.json({
-    message: 'This is a basic Express backend deployed on Vercel.',
-    version: '1.0.0'
-  })
-})
 
-app.get('/users', (req, res) => {
-  const users = [
-    { id: 1, name: 'Alice' },
-    { id: 2, name: 'Bob' }
-  ]
-  res.json(users)
-})
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://your-frontend.com"
+];
 
-app.get('/users/:id', (req, res) => {
-  const userId = Number(req.params.id)
-  res.json({ id: userId, name: `User ${userId}` })
-})
+//  CORS config
+const corsOptions = {
+  origin: function (origin, callback) {
+    // allow non-browser requests (like Postman)
+    if (!origin) return callback(null, true);
 
-app.post('/users', (req, res) => {
-  const newUser = req.body
-  res.status(201).json({ message: 'User created', user: newUser })
-})
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+};
 
-app.get('/html', (req, res) => {
-  res.type('html').send('<h1>HTML Response</h1><p>This is sent as HTML.</p>')
-})
+//  Global middlewares
+app.use(cors(corsOptions));
 
-app.get('/status', (req, res) => {
-  res.status(202).send('Accepted - processing request')
-})
+app.use(express.json());
 
-app.get('/headers', (req, res) => {
-  res.set('X-Learn-Express', 'true')
-  res.json({ message: 'Custom header sent', exampleHeader: 'X-Learn-Express' })
-})
+app.get("/", (req, res) => {
+  res.send("Welcome to the Joke API! Visit /api/jokes for some laughs.");
+});
 
-app.get('/redirect', (req, res) => {
-  res.redirect('/about')
-})
+//  API routes
+app.get("/api/jokes", (req, res) => {
+  const jokes = [
+    { id: 1, author: "Anonymous", joke: "Why don't scientists trust atoms? Because they make up everything!", category: "Science" },
+    { id: 2, author: "Anonymous", joke: "Why did the scarecrow win an award? Because he was outstanding in his field!", category: "Farm" },
+    { id: 3, author: "Anonymous", joke: "Why don't eggs tell jokes? They'd crack each other up!", category: "Food" },
+    { id: 4, author: "Anonymous", joke: "What do you call fake spaghetti? An impasta!", category: "Food" },
+    { id: 5, author: "Anonymous", joke: "Why did the bicycle fall over? It was two-tired!", category: "Transportation" }
+  ];
+  res.json(jokes);
+});
 
-app.get('/send-status', (req, res) => {
-  res.sendStatus(204)
-})
+//  Health check
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ status: "OK" });
+});
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+
+//  Global error handler (keeps CORS working on errors)
+app.use((err, req, res, next) => {
+  console.error(err.message);
+
+  res.status(500).json({
+    message: err.message || "Internal Server Error"
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
