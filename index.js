@@ -10,7 +10,8 @@ const PORT = process.env.PORT || 3000;
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://frontend-ebon-ten-23.vercel.app/"
+  "https://frontend-ebon-ten-23.vercel.app",
+  
 ];
 
 //  CORS config
