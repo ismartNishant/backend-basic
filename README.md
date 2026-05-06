@@ -21,6 +21,11 @@ npm start
 - `GET /users` - returns a sample list of users
 - `GET /users/:id` - returns a user object for the given ID
 - `POST /users` - accepts JSON body and returns the created user
+- `GET /html` - sends an HTML response body
+- `GET /status` - sends a custom HTTP status with a text body
+- `GET /headers` - sends a JSON response with a custom response header
+- `GET /redirect` - redirects the browser to `/about`
+- `GET /send-status` - uses `res.sendStatus()` to return a 204 No Content response
 
 ## Notes
 

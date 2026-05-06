@@ -34,6 +34,27 @@ app.post('/users', (req, res) => {
   res.status(201).json({ message: 'User created', user: newUser })
 })
 
+app.get('/html', (req, res) => {
+  res.type('html').send('<h1>HTML Response</h1><p>This is sent as HTML.</p>')
+})
+
+app.get('/status', (req, res) => {
+  res.status(202).send('Accepted - processing request')
+})
+
+app.get('/headers', (req, res) => {
+  res.set('X-Learn-Express', 'true')
+  res.json({ message: 'Custom header sent', exampleHeader: 'X-Learn-Express' })
+})
+
+app.get('/redirect', (req, res) => {
+  res.redirect('/about')
+})
+
+app.get('/send-status', (req, res) => {
+  res.sendStatus(204)
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
